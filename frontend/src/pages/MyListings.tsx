@@ -1,15 +1,20 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Edit3, Trash2, Plus, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import Navbar from '@/components/Navbar';
+import ViewListingModal from '@/components/ViewListingModal';
+import EditListingModal from '@/components/EditListingModal';
 import { useApp } from '@/context/AppContext';
 import { toast } from '@/hooks/use-toast';
 
 const MyListings = () => {
   const { listings, deleteListing, setIsLoggedIn } = useApp();
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedListing, setSelectedListing] = useState(null);
 
   React.useEffect(() => {
     setIsLoggedIn(true);
@@ -20,6 +25,24 @@ const MyListings = () => {
     toast({
       title: "Listing deleted",
       description: "Your listing has been removed.",
+    });
+  };
+
+  const handleView = (listing: any) => {
+    setSelectedListing(listing);
+    setViewModalOpen(true);
+  };
+
+  const handleEdit = (listing: any) => {
+    setSelectedListing(listing);
+    setEditModalOpen(true);
+  };
+
+  const handleSaveEdit = (updatedData: any) => {
+    // In a real app, this would update the listing in the database
+    toast({
+      title: "Listing updated",
+      description: "Your changes have been saved.",
     });
   };
 
@@ -112,16 +135,24 @@ const MyListings = () => {
                   <p className="text-sm text-gray-600 mb-3">Listed {formatDate(listing.createdAt)}</p>
                   
                   <div className="flex items-center space-x-2">
-                    <Button size="sm" variant="outline" className="flex-1">
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => handleView(listing)}
+                    >
                       <Eye className="w-4 h-4 mr-1" />
                       View
                     </Button>
-                    <Link to="/sell/chat" className="flex-1">
-                      <Button size="sm" variant="outline" className="w-full">
-                        <Edit3 className="w-4 h-4 mr-1" />
-                        Edit
-                      </Button>
-                    </Link>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => handleEdit(listing)}
+                    >
+                      <Edit3 className="w-4 h-4 mr-1" />
+                      Edit
+                    </Button>
                     <Button 
                       size="sm" 
                       variant="outline" 
@@ -137,6 +168,20 @@ const MyListings = () => {
           </div>
         )}
       </div>
+
+      {/* Modals */}
+      <ViewListingModal
+        isOpen={viewModalOpen}
+        onClose={() => setViewModalOpen(false)}
+        listing={selectedListing}
+      />
+      
+      <EditListingModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        listing={selectedListing}
+        onSave={handleSaveEdit}
+      />
     </div>
   );
 };

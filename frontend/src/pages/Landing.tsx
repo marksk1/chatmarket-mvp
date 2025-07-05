@@ -141,17 +141,18 @@ const Landing = () => {
           <div className="flex space-x-3">
             <Button
               onClick={() => {
-                navigate("/signup");
-                setIsLoggedIn(true)
+                navigate('/signup');
+                setIsLoggedIn(true);
               }}
               className="flex-1 bg-blue-600 hover:bg-blue-700 rounded-full"
             >
               Sign Up
             </Button>
             <Button
+
               onClick={() => {
-                navigate("/login");
-                setIsLoggedIn(true)
+                navigate('/login');
+                setIsLoggedIn(true);
               }}
               variant="outline"
               className="flex-1 rounded-full border-slate-300 dark:border-slate-600"
