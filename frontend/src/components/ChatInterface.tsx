@@ -8,13 +8,15 @@ import { useApp } from '@/context/AppContext';
 interface ChatInterfaceProps {
   type: 'buy' | 'sell';
   onComplete?: () => void;
+  onViewDraftListing?: () => void;
 }
 
-const ChatInterface = ({ type, onComplete }: ChatInterfaceProps) => {
+const ChatInterface = ({ type, onComplete, onViewDraftListing }: ChatInterfaceProps) => {
   const { chatMessages, addChatMessage, setCurrentDraft } = useApp();
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
+  const [showDraftButton, setShowDraftButton] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -57,23 +59,12 @@ const ChatInterface = ({ type, onComplete }: ChatInterfaceProps) => {
         } else if (chatMessages.length === 3) {
           aiResponse = "Perfect! What price are you thinking? I can help suggest a competitive price based on similar items.";
         } else if (chatMessages.length === 5) {
-          aiResponse = "Excellent! I've gathered all the information needed. Let me create a draft listing for you. This looks like a great item that should sell quickly!";
+          aiResponse = "Excellent! I've gathered all the information needed. Your listing looks great and should attract buyers quickly!";
           
-          // Create draft listing
+          // Show draft button after a delay
           setTimeout(() => {
-            const draft = {
-              id: Date.now().toString(),
-              title: userMessage.includes('iPhone') ? 'iPhone 13 Pro' : userMessage.includes('laptop') ? 'MacBook Pro' : 'Amazing Item',
-              price: 650,
-              images: images || ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400'],
-              condition: 'Excellent',
-              description: `${userMessage} - This item is in excellent condition and ready for a new owner.`,
-              status: 'draft' as const,
-              createdAt: new Date()
-            };
-            setCurrentDraft(draft);
-            onComplete?.();
-          }, 2000);
+            setShowDraftButton(true);
+          }, 1000);
         } else {
           aiResponse = "I understand. Can you provide any additional details that might help buyers?";
         }
@@ -176,6 +167,22 @@ const ChatInterface = ({ type, onComplete }: ChatInterfaceProps) => {
           </div>
         ))}
         
+        {/* Draft Listing Button */}
+        {type === 'sell' && showDraftButton && (
+          <div className="flex justify-start">
+            <div className="bg-gray-100 text-gray-900 px-4 py-3 rounded-lg max-w-xs lg:max-w-md">
+              <p className="text-sm mb-3">Your listing is ready for review!</p>
+              <Button 
+                onClick={onViewDraftListing}
+                className="bg-green-600 hover:bg-green-700 text-white text-sm"
+                size="sm"
+              >
+                View Draft Listing
+              </Button>
+            </div>
+          </div>
+        )}
+        
         {isTyping && (
           <div className="flex justify-start">
             <div className="bg-gray-100 text-gray-900 px-4 py-2 rounded-lg">
@@ -192,7 +199,7 @@ const ChatInterface = ({ type, onComplete }: ChatInterfaceProps) => {
       </div>
 
       {/* Quick Replies */}
-      {chatMessages.length > 0 && chatMessages.length < 6 && (
+      {chatMessages.length > 0 && chatMessages.length < 6 && !showDraftButton && (
         <div className="px-4 py-2 border-t border-gray-200">
           <div className="flex flex-wrap gap-2">
             {quickReplies.map((reply, index) => (
@@ -216,7 +223,7 @@ const ChatInterface = ({ type, onComplete }: ChatInterfaceProps) => {
       {/* Image Preview */}
       {selectedImages.length > 0 && (
         <div className="px-4 py-3 border-t border-gray-200 bg-gray-50">
-          <div className="flex items-center space-x-2 overflow-x-auto pb-2">
+          <div className="flex items-center space-x-3 overflow-x-auto pb-2">
             {selectedImages.map((img, index) => (
               <div key={index} className="relative flex-shrink-0">
                 <div className="w-20 h-20 rounded-lg overflow-hidden bg-white shadow-sm border border-gray-200">

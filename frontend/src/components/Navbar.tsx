@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Menu, Bell, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,6 +10,7 @@ const Navbar = () => {
   const { isLoggedIn, setIsLoggedIn } = useApp();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const navigate = useNavigate();
+
 
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -24,7 +25,7 @@ const Navbar = () => {
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">CM</span>
             </div>
-            <h1 className="text-xl font-medium text-slate-700 dark:text-white hidden sm:block">Chat Market</h1>
+            <span className="text-xl font-bold text-slate-900 dark:text-white hidden sm:block">Chat Market</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -55,8 +56,7 @@ const Navbar = () => {
                   onClick={() => {
                     navigate('/signup');
                     setIsLoggedIn(true)
-                  }}
-                  size="sm"
+                  }} size="sm"
                   className="bg-blue-600 hover:bg-blue-700 rounded-full"
                 >
                   Sign Up

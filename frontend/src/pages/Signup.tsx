@@ -8,19 +8,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Upload, User } from "lucide-react";
+import { Eye, EyeOff, Upload, User } from "lucide-react";
 
 interface SignupFormData {
     fullName: string;
     email: string;
-    avatar: string;
-    address: string;
-    phoneNumber: string;
+    avatar?: string;
+    address?: string;
+    phoneNumber?: string;
     password: string;
 }
 
 export default function SignupForm() {
-    const [avatarPreview, setAvatarPreview] = useState<string>("");
+
+    // a dummy avatar URL is added
+    const [avatarPreview, setAvatarPreview] = useState<string>("https://www.djibstyle.com/wp-content/uploads/2019/01/dummy-snapcode-avatar@2x-2.png");
+    const [showPassword, setShowPassword] = useState(false)
 
     const {
         register,
@@ -31,7 +34,7 @@ export default function SignupForm() {
 
     // Manually register `avatar` because the input is hidden
     useEffect(() => {
-        register("avatar", { required: "Avatar is required" });
+        register("avatar");
     }, [register]);
 
     const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,7 +150,6 @@ export default function SignupForm() {
                                     id="phoneNumber"
                                     type="tel"
                                     {...register("phoneNumber", {
-                                        required: "Phone number is required",
                                         minLength: { value: 10, message: "Please enter a valid phone number" },
                                     })}
                                     placeholder="Enter your phone number"
@@ -158,11 +160,10 @@ export default function SignupForm() {
 
                             {/* Address */}
                             <div className="space-y-2">
-                                <Label htmlFor="address">Address *</Label>
+                                <Label htmlFor="address">Address</Label>
                                 <Textarea
                                     id="address"
                                     {...register("address", {
-                                        required: "Address is required",
                                         minLength: { value: 10, message: "Please enter a complete address" },
                                     })}
                                     placeholder="Enter your complete address"
@@ -172,18 +173,42 @@ export default function SignupForm() {
                             </div>
 
                             {/* Password */}
-                            <div className="space-y-2">
+                            {/* <div className="space-y-2">
                                 <Label htmlFor="password">Password *</Label>
                                 <Input
                                     id="password"
-                                    type="password"
-                                    {...register("password", {
-                                        required: "Password is required",
-                                        minLength: { value: 8, message: "Password must be at least 8 characters" },
-                                    })}
+                                    type={showPassword ? "text" : "password"}
+                                        {...register("password", {
+                                            required: "Password is required",
+                                            minLength: { value: 8, message: "Password must be at least 8 characters" },
+                                        })}
                                     placeholder="Create a strong password"
                                     className={errors.password ? "border-red-500" : ""}
                                 />
+                                {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
+                            </div> */}
+                            {/* Password */}
+                            <div className="space-y-2">
+                                <Label htmlFor="password">Password *</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        type={showPassword ? "text" : "password"}
+                                        {...register("password", {
+                                            required: "Password is required",
+                                            minLength: { value: 8, message: "Password must be at least 8 characters" },
+                                        })}
+                                        placeholder="Create a strong password"
+                                        className={`pr-10 ${errors.password ? "border-red-500" : ""}`}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                                    </button>
+                                </div>
                                 {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
                             </div>
 
