@@ -36,7 +36,8 @@ Here are the features within the scope of the MVP for the hackathon.
 ## AI Agent Scope	
 Prioritization: p 1 = highest, p 3 = lowest
 
-### SELLER SIDE AGENTS. 1. Seller Conversation Agent - Collects product info, handles images (Groq+Llama)
+### SELLER SIDE AGENTS. 
+1. Seller Conversation Agent - Collects product info, handles images (Groq+Llama) - p 1
 2. Image Processing Agent - Analyzes product photos (Groq+Llama)- p 1
 3. Price Research Agent - Internet price comparison via Tavily API + database (Groq+Llama) -	p 2
 4. Listing Agent - Creates database entries, manages inventory -	p 1
