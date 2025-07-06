@@ -25,7 +25,7 @@ const BuyChatOptionsModal = ({ isOpen, onClose, chatTitle }: BuyChatOptionsModal
             <span>Buy Chat Options</span>
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-4 py-4">
           <div className="space-y-2">
             <Label htmlFor="title">Title</Label>
@@ -33,10 +33,9 @@ const BuyChatOptionsModal = ({ isOpen, onClose, chatTitle }: BuyChatOptionsModal
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Vintage Americana Shoes"
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="monitor">Market Monitor</Label>
             <Select defaultValue="active">
@@ -49,7 +48,7 @@ const BuyChatOptionsModal = ({ isOpen, onClose, chatTitle }: BuyChatOptionsModal
               </SelectContent>
             </Select>
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="notifications">Notifications</Label>
             <Select defaultValue="max-1x">
@@ -63,7 +62,7 @@ const BuyChatOptionsModal = ({ isOpen, onClose, chatTitle }: BuyChatOptionsModal
               </SelectContent>
             </Select>
           </div>
-          
+
           <div className="space-y-2">
             <Label>Price Range</Label>
             <div className="flex items-center space-x-2">
@@ -73,7 +72,7 @@ const BuyChatOptionsModal = ({ isOpen, onClose, chatTitle }: BuyChatOptionsModal
             </div>
           </div>
         </div>
-        
+
         <div className="flex justify-end">
           <Button variant="outline" onClick={onClose}>
             Close
