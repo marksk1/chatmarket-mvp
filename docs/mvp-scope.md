@@ -32,3 +32,38 @@ Here are the features within the scope of the MVP for the hackathon.
 - [ ] AI can give information about historical price trends of this item
 - [ ] When buying, user can also search by image 
 - [ ] User gets notification when item sells
+
+## AI Agent Scope	
+Prioritization: p 1 = highest, p 3 = lowest
+
+### SELLER SIDE AGENTS. 
+1. Seller Conversation Agent - Collects product info, handles images (Groq+Llama) - p 1
+2. Image Processing Agent - Analyzes product photos (Groq+Llama)- p 1
+3. Price Research Agent - Internet price comparison via Tavily API + database (Groq+Llama) -	p 2
+4. Listing Agent - Creates database entries, manages inventory -	p 1
+5. Validation Agent - Ensures complete listings -	p 1
+6. Seller Notification Agent - SMS confirmations via Twilio - p 3
+   
+### BUYER SIDE AGENTS: 	
+1. Buyer Conversation Agent - Understands needs, budget, location (Groq+Llama) - p 1
+2. Product Search Agent - Database queries by criteria,	1
+3. Recommendation Agent - AI-powered matching with location/shipping (Groq+Llama) - p 2
+4. Order Processing Agent - Creates orders, updates inventory - p 1
+5. Buyer Notification Agent - Purchase confirmations via Twilio - p 3
+6. Seller Notification Agent - Sale alerts to sellers - p 3
+   
+### SHARED COMPONENTS: 	
+- Analytics Agent - Performance tracking, insights - p 3
+- Inventory Management - Stock tracking, availability - p 1
+- Order Status System - Pending → Confirmed → Shipped → Delivered - p 2
+- Review/Rating Agent - Post-purchase feedback - p 3
+- Dispute Resolution Agent - Handle buyer-seller issues -	p 3
+- Product Category Agent - Auto-categorize listings -	p 1
+
+### TECH STACK: 	
+- uAgents framework for agent communication
+- Groq API + Llama for AI agents
+- Tavily API for internet price research
+- Snowflake database with Python connector
+- FastAPI for web interface
+- Twilio for SMS notification
