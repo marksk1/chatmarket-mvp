@@ -16,7 +16,6 @@ uri = os.getenv("MONGO_URI")
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client["chat_marketplace"]
-collection = db["user"]  # your MongoDB collection
 
 users_collection = db["users"]
 items_collection = db["items"]
