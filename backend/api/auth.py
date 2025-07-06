@@ -1,9 +1,8 @@
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from bson import ObjectId
 from db import users_collection
 from models import UserInDB, TokenData
 import os
@@ -24,6 +23,7 @@ def get_password_hash(password):
 def get_user(username: str):
     user_data = users_collection.find_one({"username": username})
     if user_data:
+        user_data["id"] = str(user_data["_id"])
         return UserInDB(**user_data)
     return None
 

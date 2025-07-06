@@ -13,6 +13,7 @@ class UserOut(UserBase):
 
 class UserInDB(UserBase):
     hashed_password: str
+    id: Optional[str]  # Must be included for ownership
 
 class Token(BaseModel):
     access_token: str
@@ -25,6 +26,8 @@ class Item(BaseModel):
     name: str
     description: Optional[str] = None
     price: float
+    images: Optional[List[str]] = None
+    owner_id: Optional[str] = None  # Link to MongoDB _id of the user
 
 class ItemOut(Item):
     id: str
