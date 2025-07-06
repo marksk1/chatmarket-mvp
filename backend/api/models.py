@@ -1,6 +1,5 @@
-from ast import List
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+from typing import List, Optional
 
 class UserBase(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
