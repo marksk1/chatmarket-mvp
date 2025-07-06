@@ -1,18 +1,20 @@
-
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Edit3, Trash2, Plus, Eye } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Navbar from '@/components/Navbar';
-import ViewListingModal from '@/components/ViewListingModal';
+import ListingCard from '@/components/ListingCard';
+import ListingOptionsDrawer from '@/components/ListingOptionsDrawer';
 import EditListingModal from '@/components/EditListingModal';
 import { useApp } from '@/context/AppContext';
 import { toast } from '@/hooks/use-toast';
 
 const MyListings = () => {
+  const navigate = useNavigate();
   const { listings, deleteListing, setIsLoggedIn } = useApp();
-  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [optionsDrawerOpen, setOptionsDrawerOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedListing, setSelectedListing] = useState(null);
 
@@ -20,44 +22,89 @@ const MyListings = () => {
     setIsLoggedIn(true);
   }, [setIsLoggedIn]);
 
-  const handleDelete = (id: string) => {
-    deleteListing(id);
-    toast({
-      title: "Listing deleted",
-      description: "Your listing has been removed.",
-    });
+  // Mock sold listings for demonstration
+  const mockSoldListings = [
+    {
+      id: 'sold-1',
+      title: 'Vintage Leather Jacket',
+      price: 120,
+      images: ['https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400'],
+      condition: 'Good',
+      description: 'Classic vintage leather jacket in great condition.',
+      status: 'sold' as const,
+      createdAt: new Date('2024-01-05')
+    },
+    {
+      id: 'sold-2',
+      title: 'Gaming Headset',
+      price: 75,
+      images: ['https://images.unsplash.com/photo-1599669454699-248893623440?w=400'],
+      condition: 'Excellent',
+      description: 'High-quality gaming headset with noise cancellation.',
+      status: 'sold' as const,
+      createdAt: new Date('2023-12-28')
+    }
+  ];
+
+  const activeListings = listings.filter(l => l.status === 'active');
+  const soldListings = mockSoldListings;
+
+  const handleCardClick = (listing: any) => {
+    // Navigate to chat for this listing
+    navigate(`/chat/${listing.id}`);
   };
 
-  const handleView = (listing: any) => {
+  const handleOptionsClick = (listing: any) => {
     setSelectedListing(listing);
-    setViewModalOpen(true);
+    setOptionsDrawerOpen(true);
   };
 
-  const handleEdit = (listing: any) => {
-    setSelectedListing(listing);
+  const handleChatAboutListing = () => {
+    if (selectedListing) {
+      navigate(`/chat/${selectedListing.id}`);
+    }
+  };
+
+  const handleShareListing = () => {
+    if (selectedListing) {
+      // Copy listing URL to clipboard
+      const url = `${window.location.origin}/listing/${selectedListing.id}`;
+      navigator.clipboard.writeText(url);
+      toast({
+        title: "Link copied!",
+        description: "Listing link has been copied to your clipboard.",
+      });
+    }
+  };
+
+  const handleEditListing = () => {
     setEditModalOpen(true);
   };
 
+  const handleDeleteListing = () => {
+    if (selectedListing) {
+      deleteListing(selectedListing.id);
+      toast({
+        title: "Listing deleted",
+        description: "Your listing has been removed.",
+      });
+    }
+  };
+
   const handleSaveEdit = (updatedData: any) => {
-    // In a real app, this would update the listing in the database
     toast({
       title: "Listing updated",
       description: "Your changes have been saved.",
     });
   };
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    }).format(date);
-  };
+  const totalListings = activeListings.length + soldListings.length;
+  const totalEarnings = soldListings.reduce((sum, l) => sum + l.price, 0);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -77,28 +124,28 @@ const MyListings = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card>
             <CardContent className="p-6">
-              <div className="text-2xl font-bold text-gray-900">{listings.filter(l => l.status === 'active').length}</div>
+              <div className="text-2xl font-bold text-gray-900">{activeListings.length}</div>
               <div className="text-sm text-gray-600">Active Listings</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6">
-              <div className="text-2xl font-bold text-gray-900">{listings.filter(l => l.status === 'sold').length}</div>
+              <div className="text-2xl font-bold text-gray-900">{soldListings.length}</div>
               <div className="text-sm text-gray-600">Sold Items</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6">
               <div className="text-2xl font-bold text-green-600">
-                ${listings.filter(l => l.status === 'sold').reduce((sum, l) => sum + l.price, 0)}
+                ${totalEarnings}
               </div>
               <div className="text-sm text-gray-600">Total Earnings</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Listings Grid */}
-        {listings.length === 0 ? (
+        {/* Listings Tabs */}
+        {totalListings === 0 ? (
           <div className="text-center py-12">
             <div className="w-24 h-24 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
               <Plus className="w-8 h-8 text-gray-400" />
@@ -110,72 +157,76 @@ const MyListings = () => {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {listings.map((listing) => (
-              <Card key={listing.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-w-16 aspect-h-9 relative">
-                  <img
-                    src={listing.images[0]}
-                    alt={listing.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute top-2 right-2">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      listing.status === 'active' 
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      {listing.status === 'active' ? 'Active' : 'Sold'}
-                    </span>
-                  </div>
+          <Tabs defaultValue="active" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 mb-8">
+              <TabsTrigger value="active" className="text-base">
+                Active Listings ({activeListings.length})
+              </TabsTrigger>
+              <TabsTrigger value="sold" className="text-base">
+                Sold Items ({soldListings.length})
+              </TabsTrigger>
+            </TabsList>
+
+            {/* Active Listings */}
+            <TabsContent value="active" className="space-y-6">
+              {activeListings.length === 0 ? (
+                <div className="text-center py-12">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No active listings</h3>
+                  <p className="text-gray-600 mb-6">Create a new listing to start selling</p>
+                  <Link to="/sell/chat">
+                    <Button>Create Listing</Button>
+                  </Link>
                 </div>
-                <CardContent className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-1">{listing.title}</h3>
-                  <p className="text-lg font-bold text-green-600 mb-2">${listing.price}</p>
-                  <p className="text-sm text-gray-600 mb-3">Listed {formatDate(listing.createdAt)}</p>
-                  
-                  <div className="flex items-center space-x-2">
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="flex-1"
-                      onClick={() => handleView(listing)}
-                    >
-                      <Eye className="w-4 h-4 mr-1" />
-                      View
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      className="flex-1"
-                      onClick={() => handleEdit(listing)}
-                    >
-                      <Edit3 className="w-4 h-4 mr-1" />
-                      Edit
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      onClick={() => handleDelete(listing.id)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {activeListings.map((listing) => (
+                    <ListingCard
+                      key={listing.id}
+                      listing={listing}
+                      onCardClick={handleCardClick}
+                      onOptionsClick={handleOptionsClick}
+                    />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Sold Listings */}
+            <TabsContent value="sold" className="space-y-6">
+              {soldListings.length === 0 ? (
+                <div className="text-center py-12">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No sold items yet</h3>
+                  <p className="text-gray-600">Your sold items will appear here</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {soldListings.map((listing) => (
+                    <ListingCard
+                      key={listing.id}
+                      listing={listing}
+                      onCardClick={handleCardClick}
+                      onOptionsClick={handleOptionsClick}
+                    />
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         )}
       </div>
 
-      {/* Modals */}
-      <ViewListingModal
-        isOpen={viewModalOpen}
-        onClose={() => setViewModalOpen(false)}
-        listing={selectedListing}
+      {/* Options Drawer */}
+      <ListingOptionsDrawer
+        isOpen={optionsDrawerOpen}
+        onClose={() => setOptionsDrawerOpen(false)}
+        onChatAboutListing={handleChatAboutListing}
+        onShareListing={handleShareListing}
+        onEditListing={handleEditListing}
+        onDeleteListing={handleDeleteListing}
+        listingTitle={selectedListing?.title || ''}
       />
-      
+
+      {/* Edit Modal */}
       <EditListingModal
         isOpen={editModalOpen}
         onClose={() => setEditModalOpen(false)}
