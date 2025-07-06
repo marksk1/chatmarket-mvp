@@ -4,3 +4,4 @@ uvicorn
 python-jose[cryptography]
 passlib[bcrypt]
 python-dotenv
+boto3
