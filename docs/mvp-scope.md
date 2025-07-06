@@ -51,7 +51,13 @@ Prioritization: p 1 = highest, p 3 = lowest
 4. Order Processing Agent - Creates orders, updates inventory - p 1
 5. Buyer Notification Agent - Purchase confirmations via Twilio - p 3
 6. Seller Notification Agent - Sale alerts to sellers - p 3
-   
+
+### USER PROFILE AS KNOWLEDGE GRAPH
+- Store user profile as a knowledge graph to capture the user's preferences more flexibly - p 2
+  - (Prosus judges are keen on this)
+  - A concrete example of a preference could be: 
+    - The types of items a user is typically interested in buying, based on their chat data.
+
 ### SHARED COMPONENTS: 	
 - Analytics Agent - Performance tracking, insights - p 3
 - Inventory Management - Stock tracking, availability - p 1
