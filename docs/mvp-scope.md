@@ -33,7 +33,7 @@ Here are the features within the scope of the MVP for the hackathon.
 - [ ] When buying, user can also search by image 
 - [ ] User gets notification when item sells
 
-## AI agent scope	
+## AI Agent Scope	
 Prioritization: p 1 = highest, p 3 = lowest
 
 ### SELLER SIDE AGENTS. 1. Seller Conversation Agent - Collects product info, handles images (Groq+Llama)
@@ -42,7 +42,7 @@ Prioritization: p 1 = highest, p 3 = lowest
 4. Listing Agent - Creates database entries, manages inventory -	p 1
 5. Validation Agent - Ensures complete listings -	p 1
 6. Seller Notification Agent - SMS confirmations via Twilio - p 3
-7. 
+   
 ### BUYER SIDE AGENTS: 	
 1. Buyer Conversation Agent - Understands needs, budget, location (Groq+Llama) - p 1
 2. Product Search Agent - Database queries by criteria,	1
@@ -50,7 +50,7 @@ Prioritization: p 1 = highest, p 3 = lowest
 4. Order Processing Agent - Creates orders, updates inventory - p 1
 5. Buyer Notification Agent - Purchase confirmations via Twilio - p 3
 6. Seller Notification Agent - Sale alerts to sellers - p 3
-7. 
+   
 ### SHARED COMPONENTS: 	
 - Analytics Agent - Performance tracking, insights - p 3
 - Inventory Management - Stock tracking, availability - p 1
