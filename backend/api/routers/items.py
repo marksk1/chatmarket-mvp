@@ -12,7 +12,7 @@ router = APIRouter(prefix="/items", tags=["items"])
 @router.get("/", response_model=list[ItemOut])
 def list_items():
     items = items_collection.find()
-    return items
+    return [ItemOut(id=str(i["_id"]), **i) for i in items]
 
 # ✅ PUBLIC: List filtered items
 @router.post("/query", response_model=None)
@@ -20,7 +20,7 @@ def query_items(input_data: QueryInput):
     try:
         # Run the user-provided query
         items = list(items_collection.aggregate(input_data.query))
-        return [ItemOut(id=str(i["_id"]), **i) for i in items]
+        return items
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
