@@ -1,0 +1,6 @@
+uagents
+groq
+pymongo[srv]
+uvicorn
+requests
+pydantic
