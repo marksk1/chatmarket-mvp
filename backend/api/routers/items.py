@@ -15,7 +15,7 @@ def list_items():
     return [ItemOut(id=str(i["_id"]), **i) for i in items]
 
 # ✅ PUBLIC: List filtered items
-@router.post("/query", response_model=list[ItemOut])
+@router.post("/query", response_model=None)
 def query_items(input_data: QueryInput):
     try:
         # Run the user-provided query
