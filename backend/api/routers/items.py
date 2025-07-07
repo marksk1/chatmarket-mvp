@@ -12,7 +12,7 @@ router = APIRouter(prefix="/items", tags=["items"])
 @router.get("/", response_model=list[ItemOut])
 def list_items():
     items = items_collection.find()
-    return [ItemOut(id=str(i["_id"]), **i) for i in items]
+    return items
 
 # ✅ PUBLIC: List filtered items
 @router.post("/query", response_model=None)
