@@ -2,11 +2,19 @@ from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 
 class UserBase(BaseModel):
-    username: str = Field(..., min_length=3, max_length=50)
+    # React sends fullName ➜ backend keeps username
+    username: str = Field(..., alias="fullName", min_length=2,max_length=50)
     email: EmailStr
+    avatar: Optional[str] = None
+    address: Optional[str] = None
+    phone_number: Optional[str] = Field(None, alias="phoneNumber")
 
+    class Config:
+        allow_population_by_field_name = True    # accepts either alias or field name
+        orm_mode = True                        
+        
 class UserCreate(UserBase):
-    password: str = Field(..., min_length=6)
+    password: str = Field(..., min_length=8)
 
 class UserOut(UserBase):
     id: str
