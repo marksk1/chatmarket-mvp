@@ -34,5 +34,5 @@ class ItemOut(Item):
 
 # Accept any dictionary as query
 class QueryInput(BaseModel):
-    query: List[Dict[str, Any]]
+    query: Dict[str, Any]
 
