@@ -19,7 +19,7 @@ def list_items():
 def query_items(input_data: QueryInput):
     try:
         # Run the user-provided query
-        results = list(collection.find(input_data.query, {"_id": 0}))
+        results = list(items_collection.find(input_data.query, {"_id": 0}))
         return {"results": results}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
