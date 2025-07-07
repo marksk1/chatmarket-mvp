@@ -2,7 +2,7 @@ from typing import List
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
 from db import items_collection
 from bson import ObjectId
-from models import Item, ItemOut, UserInDB
+from models import Item, ItemOut, UserInDB, QueryInput
 from s3 import upload_image_to_s3
 from auth import get_current_user
 
