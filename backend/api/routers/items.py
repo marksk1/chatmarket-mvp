@@ -2,7 +2,7 @@ from typing import List
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
 from db import items_collection
 from bson import ObjectId
-from models import Item, ItemOut, UserInDB
+from models import Item, ItemOut, UserInDB, QueryInput
 from s3 import upload_image_to_s3
 from auth import get_current_user
 
@@ -13,6 +13,16 @@ router = APIRouter(prefix="/items", tags=["items"])
 def list_items():
     items = items_collection.find()
     return [ItemOut(id=str(i["_id"]), **i) for i in items]
+
+# ✅ PUBLIC: List filtered items
+@router.post("/query", response_model=list[ItemOut])
+def query_items(input_data: QueryInput):
+    try:
+        # Run the user-provided query
+        results = list(collection.find(input_data.query, {"_id": 0}))
+        return {"results": results}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 # ✅ PUBLIC: Get item by ID
 @router.get("/{item_id}", response_model=ItemOut)
