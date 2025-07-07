@@ -15,17 +15,12 @@ def list_items():
     return [ItemOut(id=str(i["_id"]), **i) for i in items]
 
 # ✅ PUBLIC: List filtered items
-@router.post("/query", response_model=None)
+@router.post("/query", response_model=list[ItemOut])
 def query_items(input_data: QueryInput):
     try:
         # Run the user-provided query
-        items = list(items_collection.aggregate(input_data.query))
-        result = []
-        for item in items:
-            if item["_id"]:
-                item["_id"] = str(item["_id"])
-            result += [item]
-        return result
+        items = list(items_collection.find(input_data.query))
+        return [ItemOut(id=str(i["_id"]), **i) for i in items]
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
