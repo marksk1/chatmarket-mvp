@@ -19,7 +19,7 @@ def list_items():
 def query_items(input_data: QueryInput):
     try:
         # Run the user-provided query
-        items = list(items_collection.find(input_data.query))
+        items = list(items_collection.aggregate(input_data.query))
         return [ItemOut(id=str(i["_id"]), **i) for i in items]
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
