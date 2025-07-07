@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import List, Optional
+from typing import List, Optional, Any, Dict
 
 class UserBase(BaseModel):
     username: str = Field(..., min_length=3, max_length=50)
@@ -31,3 +31,8 @@ class Item(BaseModel):
 
 class ItemOut(Item):
     id: str
+
+# Accept any dictionary as query
+class QueryInput(BaseModel):
+    query: Dict[str, Any]
+
