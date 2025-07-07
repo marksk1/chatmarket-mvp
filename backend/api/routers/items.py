@@ -20,6 +20,9 @@ def query_items(input_data: QueryInput):
     try:
         # Run the user-provided query
         items = list(items_collection.aggregate(input_data.query))
+        for item in items:
+            if item["_id"]:
+                item["_id"] = str(item["_id"])
         return items
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
