@@ -121,22 +121,22 @@ const MyListings = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card>
-            <CardContent className="p-6">
-              <div className="text-2xl font-bold text-gray-900">{activeListings.length}</div>
+            <CardContent className="py-2 px-5">
+              <div className="text-2xl !leading-7 font-bold text-gray-900">{activeListings.length}</div>
               <div className="text-sm text-gray-600">Active Listings</div>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="p-6">
-              <div className="text-2xl font-bold text-gray-900">{soldListings.length}</div>
+            <CardContent className="py-2 px-5">
+              <div className="text-2xl !leading-7 font-bold text-gray-900">{soldListings.length}</div>
               <div className="text-sm text-gray-600">Sold Items</div>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="p-6">
-              <div className="text-2xl font-bold text-green-600">
+            <CardContent className="py-2 px-5">
+              <div className="text-2xl !leading-7 font-bold text-green-600">
                 ${totalEarnings}
               </div>
               <div className="text-sm text-gray-600">Total Earnings</div>

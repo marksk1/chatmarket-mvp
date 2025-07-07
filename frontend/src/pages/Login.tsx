@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
+import axios from "axios";
 
 interface LoginFormData {
     email: string;
@@ -20,7 +21,9 @@ interface LoginFormProps {
 
 export default function LoginForm({ onForgotPassword, onSignUp }: LoginFormProps) {
     const [showPassword, setShowPassword] = useState(false);
-
+    const api = axios.create({
+        baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000",
+    });
     const {
         register,
         handleSubmit,
@@ -29,14 +32,28 @@ export default function LoginForm({ onForgotPassword, onSignUp }: LoginFormProps
 
     const onSubmit = async (data: LoginFormData) => {
         try {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            console.log("Login submitted:", data);
+            // FastAPI OAuth2 endpoint expects form‑url‑encoded, not JSON
+            const body = new URLSearchParams();
+            body.append("username", data.email);   // email ≙ username field
+            body.append("password", data.password);
+
+            const res = await api.post("/auth/login", body, {
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            });
+
+            // Save token (localStorage, cookie, etc.)
+            localStorage.setItem("access_token", res.data.access_token);
+
             alert("Login successful!");
-        } catch (error) {
-            console.error("Error logging in:", error);
+            // navigate("/dashboard")  // optional redirect
+        } catch (err: any) {
+            alert(
+                err.response?.data?.detail ||
+                "Login failed — please check your credentials."
+            );
         }
     };
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center p-4">

@@ -1,5 +1,5 @@
 import type React from "react";
-
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Eye, EyeOff, Upload, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface SignupFormData {
     fullName: string;
@@ -20,6 +21,13 @@ interface SignupFormData {
 }
 
 export default function SignupForm() {
+
+    const api = axios.create({
+        baseURL: import.meta.env.VITE_API_URL || "http://localhost:8000",
+        withCredentials: false, // flip to true when you send cookies / tokens
+    });
+
+    const navigate = useNavigate();
 
     // a dummy avatar URL is added
     const [avatarPreview, setAvatarPreview] = useState<string>("https://www.djibstyle.com/wp-content/uploads/2019/01/dummy-snapcode-avatar@2x-2.png");
@@ -52,12 +60,13 @@ export default function SignupForm() {
 
     const onSubmit = async (data: SignupFormData) => {
         try {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            console.log("Form submitted:", data);
+            const response = await api.post("/users/", data);
+            console.log("Signup success:", response.data);
             alert("Account created successfully!");
+            navigate("/login");
         } catch (error) {
-            console.error("Error creating account:", error);
+            console.error("Signup error:", error.response?.data || error.message);
+            alert("Failed to create account.");
         }
     };
 
