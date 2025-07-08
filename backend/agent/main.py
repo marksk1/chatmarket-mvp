@@ -4,24 +4,19 @@ import uvicorn
 import asyncio
 from uagents import Agent, Context
 
-# Define the message format
 class ChatMessage(BaseModel):
     text: str
 
-# Create the agent
 agent = Agent(name="chatbot", seed="chatbot_secret_seed")
 
-# In-memory response storage
-inbox = {}
+# Temporary response store
+response_box = {}
 
-# Define agent behavior
 @agent.on_message(model=ChatMessage)
 async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
-    response = f"Hello! You said: {msg.text}"
-    inbox[sender] = response
-    await ctx.send(sender, ChatMessage(text=response))
+    print(f"[AGENT] Received: {msg.text}")
+    response_box[sender] = f"Hello! You said: {msg.text}"
 
-# REST API setup
 app = FastAPI()
 
 class Message(BaseModel):
@@ -30,16 +25,21 @@ class Message(BaseModel):
 
 @app.post("/send")
 async def send_message(data: Message):
-    await agent.send(data.sender, ChatMessage(text=data.message))
-    await asyncio.sleep(1)
-    return {"response": inbox.get(data.sender, "No response yet")}
+    sender = data.sender
+    # Clean any old response
+    response_box.pop(sender, None)
 
-# Run both FastAPI and uAgent
+    await agent.send(sender, ChatMessage(text=data.message))
+
+    # Wait up to 2s for the response
+    for _ in range(20):
+        await asyncio.sleep(0.1)
+        if sender in response_box:
+            return {"response": response_box[sender]}
+
+    return {"error": "Agent did not respond in time"}
+
 if __name__ == "__main__":
     import threading
-
-    def run_agent():
-        agent.run()
-
-    threading.Thread(target=run_agent, daemon=True).start()
+    threading.Thread(target=agent.run, daemon=True).start()
     uvicorn.run(app, host="0.0.0.0", port=8080)
