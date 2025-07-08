@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: uagent-chatbot
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    envVars:
+      - key: UVICORN_CMD
+        value: python main.py

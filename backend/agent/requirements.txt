@@ -1,0 +1,8 @@
+uagents
+groq
+pymongo[srv]
+uvicorn
+requests
+pydantic
+python-dotenv
+fastapi
