@@ -5,3 +5,4 @@ uvicorn
 requests
 pydantic
 python-dotenv
+fastapi
